@@ -19,7 +19,6 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [customInput, setCustomInput] = useState<string>('');
   
-  // Track open/closed state for recipe accordions
   const [openUsed, setOpenUsed] = useState<Record<number, boolean>>({});
   const [openMissed, setOpenMissed] = useState<Record<number, boolean>>({});
 
@@ -43,7 +42,6 @@ export default function Home() {
     setCustomInput('');
   };
 
-  // Predictive text suggestions based on user input
   const matchingAutocomplete = useMemo(() => {
     if (!customInput.trim()) return [];
     const query = customInput.toLowerCase();
@@ -95,7 +93,6 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [selected]);
 
-  // Sort recipes by least missed ingredients first
   const sortedRecipes = useMemo(() => {
     return [...recipes].sort((a, b) => {
       if (a.missedIngredientCount !== b.missedIngredientCount) {
@@ -114,25 +111,27 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-900 text-slate-100 p-4 md:p-8 max-w-4xl mx-auto">
-      <header className="mb-8 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight text-emerald-400">Podge</h1>
-        <p className="text-slate-400 text-sm mt-1">Select ingredients to discover flavor combinations & recipes</p>
+    <main className="min-h-screen bg-gradient-to-br from-[#f7f4ed] via-[#f0eae1] to-[#e6dccf] animate-ambient text-stone-700 p-6 md:p-12 max-w-3xl mx-auto flex flex-col items-center">
+      
+      {/* Header */}
+      <header className="mb-10 text-center">
+        <h1 className="text-5xl font-light tracking-wide text-stone-800 mb-2">Podge</h1>
+        <p className="text-stone-500 text-sm font-light tracking-wide">Turn what you have into something wonderful</p>
       </header>
 
-      {/* Custom Ingredient Input Form */}
-      <section className="mb-6 relative">
-        <form onSubmit={handleAddCustom} className="flex gap-2">
+      {/* Custom Input */}
+      <section className="w-full mb-8 relative flex justify-center">
+        <form onSubmit={handleAddCustom} className="flex gap-2 w-full max-w-xl">
           <div className="relative flex-1">
             <input
               type="text"
               value={customInput}
               onChange={(e) => setCustomInput(e.target.value)}
-              placeholder="Type any custom ingredient..."
-              className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+              placeholder="Add pantry item..."
+              className="w-full bg-white/80 backdrop-blur-sm border border-stone-200/80 rounded-2xl px-5 py-3 text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-400/80 shadow-sm transition text-center"
             />
             {matchingAutocomplete.length > 0 && (
-              <ul className="absolute z-10 left-0 right-0 mt-1 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-xl">
+              <ul className="absolute z-10 left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border border-stone-200 rounded-2xl overflow-hidden shadow-xl text-center">
                 {matchingAutocomplete.map((item) => (
                   <li
                     key={item}
@@ -140,7 +139,7 @@ export default function Home() {
                       toggleIngredient(item);
                       setCustomInput('');
                     }}
-                    className="px-4 py-2 text-sm text-slate-200 hover:bg-slate-700 cursor-pointer capitalize"
+                    className="px-4 py-2.5 text-sm text-stone-700 hover:bg-amber-50/60 cursor-pointer capitalize transition"
                   >
                     + {item}
                   </li>
@@ -150,48 +149,50 @@ export default function Home() {
           </div>
           <button
             type="submit"
-            className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-5 py-2.5 rounded-xl text-sm transition"
+            className="squishy-btn bg-[#d8e2dc] text-[#3a5a40] font-medium px-6 py-3 rounded-2xl text-sm border border-[#c2d0c8]"
           >
             Add
           </button>
         </form>
       </section>
 
-      <section className="mb-6 bg-slate-800/60 p-4 rounded-xl border border-slate-700">
-        <h2 className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3">Selected Ingredients</h2>
+      {/* Selected Ingredients Pill Box */}
+      <section className="w-full mb-8 bg-white/60 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/70 shadow-sm flex flex-col items-center text-center">
+        <h2 className="text-xs uppercase tracking-widest text-stone-400 font-medium mb-4">Selected Pantry</h2>
         {selected.length === 0 ? (
-          <p className="text-slate-500 text-sm italic">Type an ingredient above or tap suggestions below...</p>
+          <p className="text-stone-400 text-sm font-light italic">Your kitchen is empty. Add items above or pick below...</p>
         ) : (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap justify-center gap-2.5">
             {selected.map((ing) => (
               <button
                 key={ing}
                 onClick={() => toggleIngredient(ing)}
-                className="bg-emerald-500 text-slate-950 font-medium px-3 py-1 rounded-full text-sm flex items-center gap-1 hover:bg-emerald-400 transition"
+                className="squishy-btn bg-[#e07a5f]/15 text-[#b84a32] border border-[#e07a5f]/30 font-medium px-4 py-2 rounded-full text-xs flex items-center gap-2"
               >
                 <span className="capitalize">{ing}</span>
-                <span className="font-bold ml-1">✕</span>
+                <span className="font-bold opacity-60">✕</span>
               </button>
             ))}
           </div>
         )}
       </section>
 
-      <section className="mb-8">
-        <h2 className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3">
-          {selected.length === 0 ? 'Common Starting Ingredients' : 'Suggested Additions'}
+      {/* Starting Ingredients / Suggestions */}
+      <section className="w-full mb-12 flex flex-col items-center">
+        <h2 className="text-xs uppercase tracking-widest text-stone-400 font-medium mb-4">
+          {selected.length === 0 ? 'Pantry Staples' : 'Suggested Additions'}
         </h2>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-center gap-2.5 max-w-2xl">
           {(selected.length === 0 ? COMMON_INGREDIENTS.slice(0, 15) : suggestions).map((ing) => {
             const isSelected = selected.includes(ing.toLowerCase());
             return (
               <button
                 key={ing}
                 onClick={() => toggleIngredient(ing)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition capitalize ${
+                className={`squishy-btn px-4 py-2 rounded-2xl text-xs font-medium border transition capitalize ${
                   isSelected
-                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300'
-                    : 'bg-slate-800 border-slate-700 hover:border-slate-500 text-slate-200'
+                    ? 'bg-[#81b29a]/20 border-[#81b29a] text-[#2f4f3e]'
+                    : 'bg-white/70 border-stone-200/80 text-stone-600 hover:bg-white'
                 }`}
               >
                 + {ing}
@@ -201,15 +202,18 @@ export default function Home() {
         </div>
       </section>
 
-      <section>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-slate-200">Matching Recipes</h2>
-          {loading && <span className="text-xs text-emerald-400 animate-pulse">Updating...</span>}
+      {/* Recipes Section */}
+      <section className="w-full flex flex-col items-center">
+        <div className="w-full flex justify-between items-center mb-6 px-2">
+          <h2 className="text-base font-medium text-stone-800 tracking-wide">Matching Recipes</h2>
+          {loading && <span className="text-xs text-amber-700/80 animate-pulse font-light">Simmering ideas...</span>}
         </div>
+
         {sortedRecipes.length === 0 && !loading && selected.length > 0 && (
-          <p className="text-slate-500 text-sm">No recipes found for this exact combination.</p>
+          <p className="text-stone-400 text-sm font-light italic text-center py-8">No recipes found for this exact combination yet.</p>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           {sortedRecipes.map((recipe) => {
             const recipeUrl = `https://spoonacular.com/recipes/${recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${recipe.id}`;
             const isUsedOpen = openUsed[recipe.id];
@@ -218,58 +222,62 @@ export default function Home() {
             return (
               <div
                 key={recipe.id}
-                className="bg-slate-800 border border-slate-700/80 rounded-xl overflow-hidden shadow-lg flex flex-col"
+                className="bg-white/70 backdrop-blur-md border border-stone-200/80 rounded-3xl overflow-hidden shadow-sm flex flex-col text-center"
               >
-                <img src={recipe.image} alt={recipe.title} className="w-full h-40 object-cover" />
-                <div className="p-4 flex flex-col justify-between flex-1">
-                  <div>
+                <div className="relative h-44 overflow-hidden bg-stone-100">
+                  <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover opacity-90 hover:scale-105 transition duration-500" />
+                </div>
+                <div className="p-6 flex flex-col justify-between flex-1 items-center">
+                  <div className="w-full">
                     <a
                       href={recipeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-slate-100 hover:text-emerald-400 transition line-clamp-1 block mb-2"
+                      className="font-medium text-stone-800 hover:text-amber-800 transition line-clamp-1 block mb-4 text-base"
                     >
                       {recipe.title} ↗
                     </a>
                     
-                    <div className="text-xs text-slate-400 mb-3 space-y-2 border-t border-slate-700/60 pt-2">
-                      {/* Used Ingredients Dropdown */}
-                      <div>
+                    <div className="text-xs text-stone-500 space-y-3 border-t border-stone-200/60 pt-4 w-full">
+                      
+                      {/* Used Ingredients Accordion */}
+                      <div className="w-full">
                         <button
                           onClick={() => toggleAccordion(recipe.id, 'used')}
-                          className="text-emerald-400 hover:text-emerald-300 font-medium flex items-center justify-between w-full text-left"
+                          className="text-[#3a5a40] font-medium flex items-center justify-between w-full px-2 py-1 rounded-xl hover:bg-[#81b29a]/10 transition"
                         >
-                          <span>✓ Uses {recipe.usedIngredientCount} selected ingredient{recipe.usedIngredientCount !== 1 ? 's' : ''}</span>
-                          <span>{isUsedOpen ? '▾' : '▸'}</span>
+                          <span>✓ Uses {recipe.usedIngredientCount} selected</span>
+                          <span className="text-stone-400">{isUsedOpen ? '▾' : '▸'}</span>
                         </button>
                         {isUsedOpen && recipe.usedIngredients && (
-                          <ul className="mt-1 pl-3 space-y-1 text-slate-300 border-l border-emerald-500/30">
+                          <ul className="mt-2 space-y-1 text-stone-600 text-left pl-4 border-l-2 border-[#81b29a]/40">
                             {recipe.usedIngredients.map((item: any, idx: number) => (
-                              <li key={idx}>• {item.original}</li>
+                              <li key={idx} className="font-light">• {item.original}</li>
                             ))}
                           </ul>
                         )}
                       </div>
 
-                      {/* Missed Ingredients Dropdown */}
+                      {/* Missed Ingredients Accordion */}
                       {recipe.missedIngredientCount > 0 && (
-                        <div>
+                        <div className="w-full">
                           <button
                             onClick={() => toggleAccordion(recipe.id, 'missed')}
-                            className="text-slate-400 hover:text-slate-300 font-medium flex items-center justify-between w-full text-left"
+                            className="text-stone-500 font-medium flex items-center justify-between w-full px-2 py-1 rounded-xl hover:bg-stone-200/40 transition"
                           >
-                            <span>+ Requires {recipe.missedIngredientCount} additional item{recipe.missedIngredientCount !== 1 ? 's' : ''}</span>
-                            <span>{isMissedOpen ? '▾' : '▸'}</span>
+                            <span>+ Needs {recipe.missedIngredientCount} more item{recipe.missedIngredientCount !== 1 ? 's' : ''}</span>
+                            <span className="text-stone-400">{isMissedOpen ? '▾' : '▸'}</span>
                           </button>
                           {isMissedOpen && recipe.missedIngredients && (
-                            <ul className="mt-1 pl-3 space-y-1 text-slate-400 border-l border-slate-600">
+                            <ul className="mt-2 space-y-1 text-stone-500 text-left pl-4 border-l-2 border-stone-300">
                               {recipe.missedIngredients.map((item: any, idx: number) => (
-                                <li key={idx}>• {item.original}</li>
+                                <li key={idx} className="font-light">• {item.original}</li>
                               ))}
                             </ul>
                           )}
                         </div>
                       )}
+
                     </div>
                   </div>
                 </div>
