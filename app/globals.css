@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @keyframes shiftBg {
   0% { background-position: 0% 50%; }
@@ -23,4 +21,3 @@
   transform: scale(0.92) translateY(2px);
   box-shadow: 0 2px 5px rgba(60, 50, 40, 0.12);
 }
- 
