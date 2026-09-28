@@ -14,11 +14,11 @@ export async function GET(request) {
   }
 
   try {
-    // 1. Find recipes by ingredients (limiting to top 6 for speed and quota efficiency)
+    // Increased number to 15 for a wider variety of results and sources
     const searchRes = await fetch(
       `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(
         ingredients
-      )}&number=6&ranking=1&apiKey=${apiKey}`
+      )}&number=15&ranking=1&apiKey=${apiKey}`
     );
     const searchData = await searchRes.json();
 
@@ -26,14 +26,12 @@ export async function GET(request) {
       return NextResponse.json([]);
     }
 
-    // 2. Extract recipe IDs and fetch full details in bulk
     const ids = searchData.map((r) => r.id).join(',');
     const bulkRes = await fetch(
       `https://api.spoonacular.com/recipes/informationBulk?ids=${ids}&apiKey=${apiKey}`
     );
     const bulkData = await bulkRes.json();
 
-    // 3. Merge bulk details with search match counts (used/missed ingredients)
     const enrichedRecipes = bulkData.map((bulkRecipe) => {
       const basicMatch = searchData.find((r) => r.id === bulkRecipe.id);
       return {
