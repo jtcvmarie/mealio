@@ -208,7 +208,7 @@ export default function Home() {
       {/* Recipes Section */}
       <section className="w-full flex flex-col items-center">
         <div className="w-full flex justify-between items-center mb-6 px-2">
-          <h2 className="text-base font-medium text-stone-800 tracking-wide">Matching Recipes</h2>
+          <h2 className="text-base font-medium text-stone-800 tracking-wide">Matching Recipes ({sortedRecipes.length})</h2>
           {loading && <span className="text-xs text-amber-700/80 animate-pulse font-light">Simmering ideas...</span>}
         </div>
 
@@ -219,9 +219,19 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           {sortedRecipes.map((recipe) => {
             const recipeUrl = recipe.sourceUrl || `https://spoonacular.com/recipes/${recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${recipe.id}`;
+            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(recipe.title + ' recipe')}`;
             const isUsedOpen = openUsed[recipe.id];
             const isMissedOpen = openMissed[recipe.id];
             const isStepsOpen = openSteps[recipe.id];
+
+            let sourceDomain = '';
+            try {
+              if (recipe.sourceUrl) {
+                sourceDomain = new URL(recipe.sourceUrl).hostname.replace('www.', '');
+              }
+            } catch (e) {
+              sourceDomain = 'web source';
+            }
 
             return (
               <div
@@ -239,6 +249,12 @@ export default function Home() {
 
                 <div className="p-6 flex flex-col justify-between flex-1 items-center">
                   <div className="w-full">
+                    {sourceDomain && (
+                      <span className="text-[10px] tracking-wider uppercase text-stone-400 font-medium block mb-1">
+                        Source: {sourceDomain}
+                      </span>
+                    )}
+
                     <a
                       href={recipeUrl}
                       target="_blank"
@@ -248,12 +264,20 @@ export default function Home() {
                       {recipe.title} ↗
                     </a>
 
-                    {/* Quick Meta Pills (Servings / Health) */}
-                    <div className="flex justify-center gap-2 mb-4 text-[11px] text-stone-500">
+                    {/* Meta Pills & Google Search Button */}
+                    <div className="flex flex-wrap justify-center items-center gap-2 mb-4 text-[11px] text-stone-500">
                       {recipe.servings && <span>🍽️ {recipe.servings} servings</span>}
                       {recipe.diets && recipe.diets.length > 0 && (
                         <span className="capitalize">🌱 {recipe.diets[0]}</span>
                       )}
+                      <a
+                        href={googleSearchUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="squishy-btn px-2.5 py-0.5 rounded-full bg-stone-200/60 hover:bg-stone-200 text-stone-600 text-[10px] font-medium tracking-wide transition inline-flex items-center gap-1 border border-stone-300/60"
+                      >
+                        🔍 Google Recipe
+                      </a>
                     </div>
                     
                     <div className="text-xs text-stone-500 space-y-3 border-t border-stone-200/60 pt-4 w-full">
@@ -316,7 +340,17 @@ export default function Home() {
                             ) : recipe.instructions ? (
                               <div className="text-xs font-light prose prose-stone" dangerouslySetInnerHTML={{ __html: recipe.instructions }} />
                             ) : (
-                              <p className="text-xs italic text-stone-400">Detailed instructions available on source website.</p>
+                              <p className="text-xs italic text-stone-400">
+                                Detailed instructions available on{' '}
+                                <a
+                                  href={recipeUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="underline hover:text-amber-800 transition"
+                                >
+                                  source website
+                                </a>.
+                              </p>
                             )}
                           </div>
                         )}
