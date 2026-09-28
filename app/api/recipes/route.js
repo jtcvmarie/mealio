@@ -1,81 +1,53 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const ingredients = searchParams.get('ingredients');
+
+  if (!ingredients) {
+    return NextResponse.json({ error: 'No ingredients provided' }, { status: 400 });
+  }
+
+  const apiKey = process.env.SPOONACULAR_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
+  }
+
+  try {
+    // 1. Find recipes by ingredients (limiting to top 6 for speed and quota efficiency)
+    const searchRes = await fetch(
+      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(
+        ingredients
+      )}&number=6&ranking=1&apiKey=${apiKey}`
     );
+    const searchData = await searchRes.json();
 
-    export async function GET(request) {
-      try {
-          const { searchParams } = new URL(request.url);
-              const ingredients = searchParams.get('ingredients');
+    if (!Array.isArray(searchData) || searchData.length === 0) {
+      return NextResponse.json([]);
+    }
 
-                  if (!ingredients) {
-                        return NextResponse.json(
-                                { error: 'No ingredients provided' },
-                                        { status: 400 }
-                                              );
-                                                  }
+    // 2. Extract recipe IDs and fetch full details in bulk
+    const ids = searchData.map((r: any) => r.id).join(',');
+    const bulkRes = await fetch(
+      `https://api.spoonacular.com/recipes/informationBulk?ids=${ids}&apiKey=${apiKey}`
+    );
+    const bulkData = await bulkRes.json();
 
-                                                      const queryKey = ingredients
-                                                            .split(',')
-                                                                  .map((i) => i.trim().toLowerCase())
-                                                                        .filter(Boolean)
-                                                                              .sort()
-                                                                                    .join(',');
+    // 3. Merge bulk details with search match counts (used/missed ingredients)
+    const enrichedRecipes = bulkData.map((bulkRecipe: any) => {
+      const basicMatch = searchData.find((r: any) => r.id === bulkRecipe.id);
+      return {
+        ...bulkRecipe,
+        usedIngredientCount: basicMatch ? basicMatch.usedIngredientCount : 0,
+        missedIngredientCount: basicMatch ? basicMatch.missedIngredientCount : 0,
+        usedIngredients: basicMatch ? basicMatch.usedIngredients : [],
+        missedIngredients: basicMatch ? basicMatch.missedIngredients : [],
+      };
+    });
 
-                                                                                        if (!queryKey) {
-                                                                                              return NextResponse.json(
-                                                                                                      { error: 'Invalid ingredients parameter' },
-                                                                                                              { status: 400 }
-                                                                                                                    );
-                                                                                                                        }
-
-                                                                                                                            const { data: cachedData } = await supabase
-                                                                                                                                  .from('search_cache')
-                                                                                                                                        .select('api_response')
-                                                                                                                                              .eq('ingredients_query', queryKey)
-                                                                                                                                                    .maybeSingle();
-
-                                                                                                                                                        if (cachedData?.api_response) {
-                                                                                                                                                              return NextResponse.json(cachedData.api_response);
-                                                                                                                                                                  }
-
-                                                                                                                                                                      const apiKey = process.env.SPOONACULAR_API_KEY;
-                                                                                                                                                                          if (!apiKey) {
-                                                                                                                                                                                return NextResponse.json(
-                                                                                                                                                                                        { error: 'SPOONACULAR_API_KEY is missing' },
-                                                                                                                                                                                                { status: 500 }
-                                                                                                                                                                                                      );
-                                                                                                                                                                                                          }
-
-                                                                                                                                                                                                              const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(
-                                                                                                                                                                                                                    queryKey
-                                                                                                                                                                                                                        )}&number=50&apiKey=${apiKey}`;
-
-                                                                                                                                                                                                                            const response = await fetch(spoonacularUrl);
-
-                                                                                                                                                                                                                                if (!response.ok) {
-                                                                                                                                                                                                                                      const errText = await response.text();
-                                                                                                                                                                                                                                            return NextResponse.json(
-                                                                                                                                                                                                                                                    { error: `API error ${response.status}`, details: errText },
-                                                                                                                                                                                                                                                            { status: response.status }
-                                                                                                                                                                                                                                                                  );
-                                                                                                                                                                                                                                                                      }
-
-                                                                                                                                                                                                                                                                          const recipeData = await response.json();
-
-                                                                                                                                                                                                                                                                              await supabase
-                                                                                                                                                                                                                                                                                    .from('search_cache')
-                                                                                                                                                                                                                                                                                          .insert([{ ingredients_query: queryKey, api_response: recipeData }]);
-
-                                                                                                                                                                                                                                                                                              return NextResponse.json(recipeData);
-                                                                                                                                                                                                                                                                                                } catch (err) {
-                                                                                                                                                                                                                                                                                                    return NextResponse.json(
-                                                                                                                                                                                                                                                                                                          { error: 'Internal Server Error', details: err.message },
-                                                                                                                                                                                                                                                                                                                { status: 500 }
-                                                                                                                                                                                                                                                                                                                    );
-                                                                                                                                                                                                                                                                                                                      }
-                                                                                                                                                                                                                                                                                                                      }
-                                                                                                                                                                                                                                                                                                                      
+    return NextResponse.json(enrichedRecipes);
+  } catch (error) {
+    console.error('Error fetching enriched recipes:', error);
+    return NextResponse.json({ error: 'Failed to fetch recipes' }, { status: 500 });
+  }
+}
