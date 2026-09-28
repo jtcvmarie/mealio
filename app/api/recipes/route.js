@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
+export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const ingredients = searchParams.get('ingredients');
 
@@ -27,15 +27,15 @@ export async function GET(request: Request) {
     }
 
     // 2. Extract recipe IDs and fetch full details in bulk
-    const ids = searchData.map((r: any) => r.id).join(',');
+    const ids = searchData.map((r) => r.id).join(',');
     const bulkRes = await fetch(
       `https://api.spoonacular.com/recipes/informationBulk?ids=${ids}&apiKey=${apiKey}`
     );
     const bulkData = await bulkRes.json();
 
     // 3. Merge bulk details with search match counts (used/missed ingredients)
-    const enrichedRecipes = bulkData.map((bulkRecipe: any) => {
-      const basicMatch = searchData.find((r: any) => r.id === bulkRecipe.id);
+    const enrichedRecipes = bulkData.map((bulkRecipe) => {
+      const basicMatch = searchData.find((r) => r.id === bulkRecipe.id);
       return {
         ...bulkRecipe,
         usedIngredientCount: basicMatch ? basicMatch.usedIngredientCount : 0,
