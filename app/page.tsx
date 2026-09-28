@@ -21,6 +21,7 @@ export default function Home() {
   
   const [openUsed, setOpenUsed] = useState<Record<number, boolean>>({});
   const [openMissed, setOpenMissed] = useState<Record<number, boolean>>({});
+  const [openSteps, setOpenSteps] = useState<Record<number, boolean>>({});
 
   const toggleIngredient = (ing: string) => {
     const item = ing.toLowerCase().trim();
@@ -102,11 +103,13 @@ export default function Home() {
     });
   }, [recipes]);
 
-  const toggleAccordion = (id: number, type: 'used' | 'missed') => {
+  const toggleAccordion = (id: number, type: 'used' | 'missed' | 'steps') => {
     if (type === 'used') {
       setOpenUsed(prev => ({ ...prev, [id]: !prev[id] }));
-    } else {
+    } else if (type === 'missed') {
       setOpenMissed(prev => ({ ...prev, [id]: !prev[id] }));
+    } else {
+      setOpenSteps(prev => ({ ...prev, [id]: !prev[id] }));
     }
   };
 
@@ -215,9 +218,10 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           {sortedRecipes.map((recipe) => {
-            const recipeUrl = `https://spoonacular.com/recipes/${recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${recipe.id}`;
+            const recipeUrl = recipe.sourceUrl || `https://spoonacular.com/recipes/${recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${recipe.id}`;
             const isUsedOpen = openUsed[recipe.id];
             const isMissedOpen = openMissed[recipe.id];
+            const isStepsOpen = openSteps[recipe.id];
 
             return (
               <div
@@ -226,17 +230,31 @@ export default function Home() {
               >
                 <div className="relative h-44 overflow-hidden bg-stone-100">
                   <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover opacity-90 hover:scale-105 transition duration-500" />
+                  {recipe.readyInMinutes && (
+                    <span className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-stone-700 shadow-sm">
+                      ⏱ {recipe.readyInMinutes} mins
+                    </span>
+                  )}
                 </div>
+
                 <div className="p-6 flex flex-col justify-between flex-1 items-center">
                   <div className="w-full">
                     <a
                       href={recipeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-medium text-stone-800 hover:text-amber-800 transition line-clamp-1 block mb-4 text-base"
+                      className="font-medium text-stone-800 hover:text-amber-800 transition line-clamp-1 block mb-2 text-base"
                     >
                       {recipe.title} ↗
                     </a>
+
+                    {/* Quick Meta Pills (Servings / Health) */}
+                    <div className="flex justify-center gap-2 mb-4 text-[11px] text-stone-500">
+                      {recipe.servings && <span>🍽️ {recipe.servings} servings</span>}
+                      {recipe.diets && recipe.diets.length > 0 && (
+                        <span className="capitalize">🌱 {recipe.diets[0]}</span>
+                      )}
+                    </div>
                     
                     <div className="text-xs text-stone-500 space-y-3 border-t border-stone-200/60 pt-4 w-full">
                       
@@ -277,6 +295,32 @@ export default function Home() {
                           )}
                         </div>
                       )}
+
+                      {/* Step-by-Step Directions Accordion */}
+                      <div className="w-full">
+                        <button
+                          onClick={() => toggleAccordion(recipe.id, 'steps')}
+                          className="text-amber-800 font-medium flex items-center justify-between w-full px-2 py-1 rounded-xl hover:bg-amber-100/50 transition"
+                        >
+                          <span>📖 View Directions</span>
+                          <span className="text-stone-400">{isStepsOpen ? '▾' : '▸'}</span>
+                        </button>
+                        {isStepsOpen && (
+                          <div className="mt-2 space-y-2 text-stone-600 text-left pl-4 border-l-2 border-amber-300">
+                            {recipe.analyzedInstructions?.[0]?.steps ? (
+                              recipe.analyzedInstructions[0].steps.map((step: any) => (
+                                <div key={step.number} className="text-xs font-light">
+                                  <span className="font-semibold text-stone-700">{step.number}.</span> {step.step}
+                                </div>
+                              ))
+                            ) : recipe.instructions ? (
+                              <div className="text-xs font-light prose prose-stone" dangerouslySetInnerHTML={{ __html: recipe.instructions }} />
+                            ) : (
+                              <p className="text-xs italic text-stone-400">Detailed instructions available on source website.</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
 
                     </div>
                   </div>
