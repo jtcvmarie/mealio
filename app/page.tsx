@@ -22,6 +22,7 @@ export default function Home() {
   const [openUsed, setOpenUsed] = useState<Record<number, boolean>>({});
   const [openMissed, setOpenMissed] = useState<Record<number, boolean>>({});
   const [openSteps, setOpenSteps] = useState<Record<number, boolean>>({});
+  const [attachIngredients, setAttachIngredients] = useState<Record<number, boolean>>({});
 
   const toggleIngredient = (ing: string) => {
     const item = ing.toLowerCase().trim();
@@ -113,17 +114,21 @@ export default function Home() {
     }
   };
 
+  const toggleAttach = (id: number) => {
+    setAttachIngredients(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#f7f4ed] via-[#f0eae1] to-[#e6dccf] animate-ambient text-stone-700 p-6 md:p-12 max-w-3xl mx-auto flex flex-col items-center">
+    <main className="min-h-screen bg-gradient-to-br from-[#f7f4ed] via-[#f0eae1] to-[#e6dccf] animate-ambient text-stone-700 p-4 md:p-8 max-w-3xl mx-auto flex flex-col items-center">
       
       {/* Header */}
-      <header className="mb-10 text-center">
-        <h1 className="text-5xl font-light tracking-wide text-stone-800 mb-2">Podge</h1>
-        <p className="text-stone-500 text-sm font-light tracking-wide">Turn what you have into something wonderful</p>
+      <header className="mb-6 text-center">
+        <h1 className="text-4xl font-light tracking-wide text-stone-800 mb-1">Podge</h1>
+        <p className="text-stone-500 text-xs font-light tracking-wide">Turn what you have into something wonderful</p>
       </header>
 
       {/* Custom Input */}
-      <section className="w-full mb-8 relative flex justify-center">
+      <section className="w-full mb-6 relative flex justify-center">
         <form onSubmit={handleAddCustom} className="flex gap-2 w-full max-w-xl">
           <div className="relative flex-1">
             <input
@@ -131,10 +136,10 @@ export default function Home() {
               value={customInput}
               onChange={(e) => setCustomInput(e.target.value)}
               placeholder="Add pantry item..."
-              className="w-full bg-white/80 backdrop-blur-sm border border-stone-200/80 rounded-2xl px-5 py-3 text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-400/80 shadow-sm transition text-center"
+              className="w-full bg-white/80 backdrop-blur-sm border border-stone-200/80 rounded-xl px-4 py-2.5 text-xs text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-400/80 shadow-sm transition text-center"
             />
             {matchingAutocomplete.length > 0 && (
-              <ul className="absolute z-10 left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border border-stone-200 rounded-2xl overflow-hidden shadow-xl text-center">
+              <ul className="absolute z-10 left-0 right-0 mt-1 bg-white/95 backdrop-blur-md border border-stone-200 rounded-xl overflow-hidden shadow-xl text-center">
                 {matchingAutocomplete.map((item) => (
                   <li
                     key={item}
@@ -142,7 +147,7 @@ export default function Home() {
                       toggleIngredient(item);
                       setCustomInput('');
                     }}
-                    className="px-4 py-2.5 text-sm text-stone-700 hover:bg-amber-50/60 cursor-pointer capitalize transition"
+                    className="px-4 py-2 text-xs text-stone-700 hover:bg-amber-50/60 cursor-pointer capitalize transition"
                   >
                     + {item}
                   </li>
@@ -152,7 +157,7 @@ export default function Home() {
           </div>
           <button
             type="submit"
-            className="squishy-btn bg-[#d8e2dc] text-[#3a5a40] font-medium px-6 py-3 rounded-2xl text-sm border border-[#c2d0c8]"
+            className="squishy-btn bg-[#d8e2dc] text-[#3a5a40] font-medium px-5 py-2.5 rounded-xl text-xs border border-[#c2d0c8]"
           >
             Add
           </button>
@@ -160,17 +165,17 @@ export default function Home() {
       </section>
 
       {/* Selected Ingredients Pill Box */}
-      <section className="w-full mb-8 bg-white/60 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/70 shadow-sm flex flex-col items-center text-center">
-        <h2 className="text-xs uppercase tracking-widest text-stone-400 font-medium mb-4">Selected Pantry</h2>
+      <section className="w-full mb-6 bg-white/60 backdrop-blur-sm p-4 rounded-2xl border border-stone-200/70 shadow-sm flex flex-col items-center text-center">
+        <h2 className="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-3">Selected Pantry</h2>
         {selected.length === 0 ? (
-          <p className="text-stone-400 text-sm font-light italic">Your kitchen is empty. Add items above or pick below...</p>
+          <p className="text-stone-400 text-xs font-light italic">Your kitchen is empty. Add items above or pick below...</p>
         ) : (
-          <div className="flex flex-wrap justify-center gap-2.5">
+          <div className="flex flex-wrap justify-center gap-2">
             {selected.map((ing) => (
               <button
                 key={ing}
                 onClick={() => toggleIngredient(ing)}
-                className="squishy-btn bg-[#e07a5f]/15 text-[#b84a32] border border-[#e07a5f]/30 font-medium px-4 py-2 rounded-full text-xs flex items-center gap-2"
+                className="squishy-btn bg-[#e07a5f]/15 text-[#b84a32] border border-[#e07a5f]/30 font-medium px-3.5 py-1.5 rounded-full text-[11px] flex items-center gap-1.5"
               >
                 <span className="capitalize">{ing}</span>
                 <span className="font-bold opacity-60">✕</span>
@@ -181,18 +186,18 @@ export default function Home() {
       </section>
 
       {/* Starting Ingredients / Suggestions */}
-      <section className="w-full mb-12 flex flex-col items-center">
-        <h2 className="text-xs uppercase tracking-widest text-stone-400 font-medium mb-4">
+      <section className="w-full mb-8 flex flex-col items-center">
+        <h2 className="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-3">
           {selected.length === 0 ? 'Pantry Staples' : 'Suggested Additions'}
         </h2>
-        <div className="flex flex-wrap justify-center gap-2.5 max-w-2xl">
+        <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
           {(selected.length === 0 ? COMMON_INGREDIENTS.slice(0, 15) : suggestions).map((ing) => {
             const isSelected = selected.includes(ing.toLowerCase());
             return (
               <button
                 key={ing}
                 onClick={() => toggleIngredient(ing)}
-                className={`squishy-btn px-4 py-2 rounded-2xl text-xs font-medium border transition capitalize ${
+                className={`squishy-btn px-3 py-1.5 rounded-xl text-[11px] font-medium border transition capitalize ${
                   isSelected
                     ? 'bg-[#81b29a]/20 border-[#81b29a] text-[#2f4f3e]'
                     : 'bg-white/70 border-stone-200/80 text-stone-600 hover:bg-white'
@@ -207,92 +212,104 @@ export default function Home() {
 
       {/* Recipes Section */}
       <section className="w-full flex flex-col items-center">
-        <div className="w-full flex justify-between items-center mb-6 px-2">
-          <h2 className="text-base font-medium text-stone-800 tracking-wide">Matching Recipes ({sortedRecipes.length})</h2>
-          {loading && <span className="text-xs text-amber-700/80 animate-pulse font-light">Simmering ideas...</span>}
+        <div className="w-full flex justify-between items-center mb-4 px-2">
+          <h2 className="text-sm font-medium text-stone-800 tracking-wide">Matching Recipes ({sortedRecipes.length})</h2>
+          {loading && <span className="text-[11px] text-amber-700/80 animate-pulse font-light">Simmering ideas...</span>}
         </div>
 
         {sortedRecipes.length === 0 && !loading && selected.length > 0 && (
-          <p className="text-stone-400 text-sm font-light italic text-center py-8">No recipes found for this exact combination yet.</p>
+          <p className="text-stone-400 text-xs font-light italic text-center py-6">No recipes found for this exact combination yet.</p>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           {sortedRecipes.map((recipe) => {
             const recipeUrl = recipe.sourceUrl || `https://spoonacular.com/recipes/${recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${recipe.id}`;
-            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(recipe.title + ' recipe')}`;
+            const isAttachOn = !!attachIngredients[recipe.id];
+            const googleSearchQuery = isAttachOn && selected.length > 0
+              ? `${recipe.title} ${selected.join(' ')} recipe`
+              : `${recipe.title} recipe`;
+            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(googleSearchQuery)}`;
+
             const isUsedOpen = openUsed[recipe.id];
             const isMissedOpen = openMissed[recipe.id];
             const isStepsOpen = openSteps[recipe.id];
 
-            let sourceDomain = '';
-            try {
-              if (recipe.sourceUrl) {
-                sourceDomain = new URL(recipe.sourceUrl).hostname.replace('www.', '');
-              }
-            } catch (e) {
-              sourceDomain = 'web source';
-            }
-
             return (
               <div
                 key={recipe.id}
-                className="bg-white/70 backdrop-blur-md border border-stone-200/80 rounded-3xl overflow-hidden shadow-sm flex flex-col text-center"
+                className="bg-white/70 backdrop-blur-md border border-stone-200/80 rounded-2xl overflow-hidden shadow-sm flex flex-col text-center"
               >
-                <div className="relative h-44 overflow-hidden bg-stone-100">
+                <div className="relative h-36 overflow-hidden bg-stone-100">
                   <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover opacity-90 hover:scale-105 transition duration-500" />
                   {recipe.readyInMinutes && (
-                    <span className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-stone-700 shadow-sm">
-                      ⏱ {recipe.readyInMinutes} mins
+                    <span className="absolute bottom-2.5 right-2.5 bg-white/90 backdrop-blur-sm px-2.5 py-0.5 rounded-full text-[11px] font-medium text-stone-700 shadow-sm">
+                      ⏱ {recipe.readyInMinutes}m
                     </span>
                   )}
                 </div>
 
-                <div className="p-6 flex flex-col justify-between flex-1 items-center">
+                <div className="p-4 flex flex-col justify-between flex-1 items-center">
                   <div className="w-full">
-                    {sourceDomain && (
-                      <span className="text-[10px] tracking-wider uppercase text-stone-400 font-medium block mb-1">
-                        Source: {sourceDomain}
-                      </span>
-                    )}
-
                     <a
                       href={recipeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-medium text-stone-800 hover:text-amber-800 transition line-clamp-1 block mb-2 text-base"
+                      className="font-medium text-stone-800 hover:text-amber-800 transition line-clamp-1 block mb-2 text-sm"
                     >
                       {recipe.title} ↗
                     </a>
 
-                    {/* Meta Pills & Google Search Button */}
-                    <div className="flex flex-wrap justify-center items-center gap-2 mb-4 text-[11px] text-stone-500">
-                      {recipe.servings && <span>🍽️ {recipe.servings} servings</span>}
+                    {/* Recipe Statistics Block */}
+                    <div className="flex flex-wrap justify-center items-center gap-2 mb-3 text-[11px] text-stone-500 font-light">
+                      {recipe.servings && <span>🍽️ {recipe.servings} sv</span>}
+                      {recipe.healthScore !== undefined && recipe.healthScore !== null && (
+                        <span>❤️ Health {recipe.healthScore}%</span>
+                      )}
+                      {recipe.spoonacularScore !== undefined && recipe.spoonacularScore !== null && (
+                        <span>⭐ Score {Math.round(recipe.spoonacularScore)}%</span>
+                      )}
+                      {recipe.pricePerServing !== undefined && recipe.pricePerServing !== null && (
+                        <span>💰 ${(recipe.pricePerServing / 100).toFixed(2)}/sv</span>
+                      )}
                       {recipe.diets && recipe.diets.length > 0 && (
                         <span className="capitalize">🌱 {recipe.diets[0]}</span>
                       )}
+                    </div>
+
+                    {/* Search Recipe & Checkbox Row */}
+                    <div className="flex items-center justify-center gap-3 mb-3 text-xs text-stone-600 bg-stone-100/60 py-2 px-3 rounded-xl border border-stone-200/50">
+                      <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={isAttachOn}
+                          onChange={() => toggleAttach(recipe.id)}
+                          className="rounded border-stone-300 text-amber-700 focus:ring-amber-500/50 w-3 h-3"
+                        />
+                        <span className="font-light text-[11px] text-stone-500">Attach Ingredients</span>
+                      </label>
                       <a
                         href={googleSearchUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="squishy-btn px-2.5 py-0.5 rounded-full bg-stone-200/60 hover:bg-stone-200 text-stone-600 text-[10px] font-medium tracking-wide transition inline-flex items-center gap-1 border border-stone-300/60"
+                        className="squishy-btn px-2.5 py-1 rounded-lg bg-white hover:bg-stone-50 text-stone-700 font-medium tracking-wide transition inline-flex items-center gap-1 border border-stone-300/60 text-[11px]"
                       >
-                        🔍 Google Recipe
+                        🔎 Search Recipe
                       </a>
                     </div>
                     
-                    <div className="text-xs text-stone-500 space-y-3 border-t border-stone-200/60 pt-4 w-full">
+                    <div className="text-xs text-stone-500 space-y-2.5 border-t border-stone-200/60 pt-3 w-full">
                       
                       {/* Used Ingredients Accordion */}
                       <div className="w-full">
                         <button
                           onClick={() => toggleAccordion(recipe.id, 'used')}
-                          className="text-[#3a5a40] font-medium flex items-center justify-between w-full px-2 py-1 rounded-xl hover:bg-[#81b29a]/10 transition"
+                          className="text-[#3a5a40] font-medium flex items-center justify-between w-full px-2 py-1 rounded-lg hover:bg-[#81b29a]/10 transition text-xs"
                         >
                           <span>✓ Uses {recipe.usedIngredientCount} selected</span>
                           <span className="text-stone-400">{isUsedOpen ? '▾' : '▸'}</span>
                         </button>
                         {isUsedOpen && recipe.usedIngredients && (
-                          <ul className="mt-2 space-y-1 text-stone-600 text-left pl-4 border-l-2 border-[#81b29a]/40">
+                          <ul className="mt-1.5 space-y-1 text-stone-600 text-left pl-3 border-l-2 border-[#81b29a]/40 text-xs">
                             {recipe.usedIngredients.map((item: any, idx: number) => (
                               <li key={idx} className="font-light">• {item.original}</li>
                             ))}
@@ -305,13 +322,13 @@ export default function Home() {
                         <div className="w-full">
                           <button
                             onClick={() => toggleAccordion(recipe.id, 'missed')}
-                            className="text-stone-500 font-medium flex items-center justify-between w-full px-2 py-1 rounded-xl hover:bg-stone-200/40 transition"
+                            className="text-stone-500 font-medium flex items-center justify-between w-full px-2 py-1 rounded-lg hover:bg-stone-200/40 transition text-xs"
                           >
                             <span>+ Needs {recipe.missedIngredientCount} more item{recipe.missedIngredientCount !== 1 ? 's' : ''}</span>
                             <span className="text-stone-400">{isMissedOpen ? '▾' : '▸'}</span>
                           </button>
                           {isMissedOpen && recipe.missedIngredients && (
-                            <ul className="mt-2 space-y-1 text-stone-500 text-left pl-4 border-l-2 border-stone-300">
+                            <ul className="mt-1.5 space-y-1 text-stone-500 text-left pl-3 border-l-2 border-stone-300 text-xs">
                               {recipe.missedIngredients.map((item: any, idx: number) => (
                                 <li key={idx} className="font-light">• {item.original}</li>
                               ))}
@@ -324,23 +341,23 @@ export default function Home() {
                       <div className="w-full">
                         <button
                           onClick={() => toggleAccordion(recipe.id, 'steps')}
-                          className="text-amber-800 font-medium flex items-center justify-between w-full px-2 py-1 rounded-xl hover:bg-amber-100/50 transition"
+                          className="text-amber-800 font-medium flex items-center justify-between w-full px-2 py-1 rounded-lg hover:bg-amber-100/50 transition text-xs"
                         >
                           <span>📖 View Directions</span>
                           <span className="text-stone-400">{isStepsOpen ? '▾' : '▸'}</span>
                         </button>
                         {isStepsOpen && (
-                          <div className="mt-2 space-y-2 text-stone-600 text-left pl-4 border-l-2 border-amber-300">
+                          <div className="mt-1.5 space-y-1.5 text-stone-600 text-left pl-3 border-l-2 border-amber-300 text-xs">
                             {recipe.analyzedInstructions?.[0]?.steps ? (
                               recipe.analyzedInstructions[0].steps.map((step: any) => (
-                                <div key={step.number} className="text-xs font-light">
+                                <div key={step.number} className="text-[11px] font-light">
                                   <span className="font-semibold text-stone-700">{step.number}.</span> {step.step}
                                 </div>
                               ))
                             ) : recipe.instructions ? (
-                              <div className="text-xs font-light prose prose-stone" dangerouslySetInnerHTML={{ __html: recipe.instructions }} />
+                              <div className="text-[11px] font-light prose prose-stone" dangerouslySetInnerHTML={{ __html: recipe.instructions }} />
                             ) : (
-                              <p className="text-xs italic text-stone-400">
+                              <p className="text-[11px] italic text-stone-400">
                                 Detailed instructions available on{' '}
                                 <a
                                   href={recipeUrl}
