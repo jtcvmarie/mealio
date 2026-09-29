@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 const COMMON_INGREDIENTS = [
   'Chicken', 'Garlic', 'Onion', 'Tomato', 'Olive Oil', 
@@ -18,6 +18,10 @@ export default function Home() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [customInput, setCustomInput] = useState<string>('');
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  // In-memory cache to store fetched results per ingredient combination and protect API quota
+  const cacheRef = useRef<Record<string, any[]>>({});
   
   const [openUsed, setOpenUsed] = useState<Record<number, boolean>>({});
   const [openMissed, setOpenMissed] = useState<Record<number, boolean>>({});
@@ -56,16 +60,30 @@ export default function Home() {
     if (selected.length === 0) {
       setRecipes([]);
       setSuggestions([]);
+      setApiError(null);
+      return;
+    }
+
+    const cacheKey = [...selected].sort().join(',');
+
+    // Check cache first before making any network request
+    if (cacheRef.current[cacheKey]) {
+      setRecipes(cacheRef.current[cacheKey]);
+      setLoading(false);
+      setApiError(null);
       return;
     }
 
     const fetchRecipes = async () => {
       setLoading(true);
+      setApiError(null);
       try {
         const res = await fetch(`/api/recipes?ingredients=${selected.join(',')}`);
         const data = await res.json();
 
         if (Array.isArray(data)) {
+          // Save result to cache
+          cacheRef.current[cacheKey] = data;
           setRecipes(data);
 
           const counts: Record<string, number> = {};
@@ -83,9 +101,13 @@ export default function Home() {
             .map(([name]) => name);
 
           setSuggestions(sorted.slice(0, 15));
+        } else {
+          setRecipes([]);
+          setApiError(data.error || 'Failed to load recipes.');
         }
       } catch (err) {
         console.error('Failed to fetch recipes:', err);
+        setApiError('Network error connecting to recipe service.');
       } finally {
         setLoading(false);
       }
@@ -217,7 +239,13 @@ export default function Home() {
           {loading && <span className="text-[11px] text-amber-700/80 animate-pulse font-light">Simmering ideas...</span>}
         </div>
 
-        {sortedRecipes.length === 0 && !loading && selected.length > 0 && (
+        {apiError && (
+          <div className="w-full bg-red-50/80 border border-red-200 text-red-600 text-xs p-4 rounded-2xl mb-4 text-center">
+            ⚠️ {apiError}
+          </div>
+        )}
+
+        {sortedRecipes.length === 0 && !loading && !apiError && selected.length > 0 && (
           <p className="text-stone-400 text-xs font-light italic text-center py-6">No recipes found for this exact combination yet.</p>
         )}
 
