@@ -55,7 +55,6 @@ export default function Home() {
       (ing) => ing.toLowerCase().includes(query) && !selected.includes(ing.toLowerCase())
     ).slice(0, 5);
   }, [customInput, selected]);
-
   useEffect(() => {
     if (selected.length === 0) {
       setRecipes([]);
@@ -66,7 +65,7 @@ export default function Home() {
 
     const cacheKey = [...selected].sort().join(',');
 
-    // Check cache first before making any network request
+    // Check cache first (only if we have cached recipes)
     if (cacheRef.current[cacheKey]) {
       setRecipes(cacheRef.current[cacheKey]);
       setLoading(false);
@@ -82,8 +81,10 @@ export default function Home() {
         const data = await res.json();
 
         if (Array.isArray(data)) {
-          // Save result to cache
-          cacheRef.current[cacheKey] = data;
+          // Only cache if recipes were actually found, preventing stuck empty states
+          if (data.length > 0) {
+            cacheRef.current[cacheKey] = data;
+          }
           setRecipes(data);
 
           const counts: Record<string, number> = {};
