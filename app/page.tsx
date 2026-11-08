@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 
-// Hardcoded Meal Data
+// Hardcoded Meal Data (No external files needed)
 const MENU_DATA = [
   {
     "id": 1,
@@ -160,6 +160,9 @@ export default function Home() {
   const [openUsed, setOpenUsed] = useState<Record<number, boolean>>({});
   const [openMissed, setOpenMissed] = useState<Record<number, boolean>>({});
   const [attachIngredients, setAttachIngredients] = useState<Record<number, boolean>>({});
+  
+  // State for the new Full Menu accordion
+  const [isFullMenuOpen, setIsFullMenuOpen] = useState<boolean>(false);
 
   const toggleIngredient = (ing: string) => {
     const item = ing.toLowerCase().trim();
@@ -437,6 +440,34 @@ export default function Home() {
           })}
         </div>
       </section>
+
+      {/* Full Menu Reference Section */}
+      <section className="w-full mt-10 mb-4 max-w-xl mx-auto">
+        <button
+          onClick={() => setIsFullMenuOpen(!isFullMenuOpen)}
+          className="w-full py-3 px-4 bg-white/50 backdrop-blur-sm border border-stone-200/70 rounded-2xl text-stone-600 font-medium text-xs flex justify-between items-center hover:bg-white/80 transition shadow-sm"
+        >
+          <span className="tracking-wide uppercase text-[10px]">📋 View Full Menu Key</span>
+          <span className="text-stone-400">{isFullMenuOpen ? '▴' : '▾'}</span>
+        </button>
+        
+        {isFullMenuOpen && (
+          <div className="mt-3 space-y-2">
+            {MENU_DATA.map((meal) => (
+              <div 
+                key={meal.id} 
+                className="bg-white/40 backdrop-blur-sm border border-stone-200/50 rounded-xl px-4 py-3 flex justify-between items-center text-xs shadow-sm"
+              >
+                <span className="font-medium text-stone-700">{meal.name}</span>
+                <span className="text-[10px] uppercase tracking-wider text-stone-500 font-medium bg-stone-200/50 px-2.5 py-1 rounded-lg">
+                  {meal.ingredients.length} items
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
     </main>
   );
 }
