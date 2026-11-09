@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 
-// Hardcoded Meal Data (No external files needed)
+// Hardcoded Meal Data
 const MENU_DATA = [
   {
     "id": 1,
@@ -159,10 +159,10 @@ export default function Home() {
   
   const [openUsed, setOpenUsed] = useState<Record<number, boolean>>({});
   const [openMissed, setOpenMissed] = useState<Record<number, boolean>>({});
-  const [attachIngredients, setAttachIngredients] = useState<Record<number, boolean>>({});
   
-  // State for the new Full Menu accordion
+  // State for the Full Menu accordions
   const [isFullMenuOpen, setIsFullMenuOpen] = useState<boolean>(false);
+  const [openMenuKey, setOpenMenuKey] = useState<Record<number, boolean>>({});
 
   const toggleIngredient = (ing: string) => {
     const item = ing.toLowerCase().trim();
@@ -247,8 +247,8 @@ export default function Home() {
     if (type === 'missed') setOpenMissed(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const toggleAttach = (id: number) => {
-    setAttachIngredients(prev => ({ ...prev, [id]: !prev[id] }));
+  const toggleMenuKey = (id: number) => {
+    setOpenMenuKey(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
@@ -350,12 +350,6 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           {processedRecipes.map((recipe) => {
-            const isAttachOn = !!attachIngredients[recipe.id];
-            const googleSearchQuery = isAttachOn && selected.length > 0
-              ? `${recipe.title} ${selected.join(' ')} recipe`
-              : `${recipe.title} recipe`;
-            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(googleSearchQuery)}`;
-
             const isUsedOpen = openUsed[recipe.id];
             const isMissedOpen = openMissed[recipe.id];
 
@@ -365,34 +359,15 @@ export default function Home() {
                 className="bg-white/70 backdrop-blur-md border border-stone-200/80 rounded-2xl overflow-hidden shadow-sm flex flex-col text-center"
               >
                 <div className="bg-[#f0eae1]/50 border-b border-stone-200/50 py-5 px-4 flex items-center justify-center min-h-[100px]">
-                   <h3 className="font-medium text-stone-800 text-sm leading-snug">{recipe.title}</h3>
+                   <h3 className="font-medium text-stone-800 text-sm leading-snug">
+                     {recipe.id}. {recipe.title}
+                   </h3>
                 </div>
 
                 <div className="p-4 flex flex-col justify-between flex-1 items-center">
                   <div className="w-full">
                     
-                    {/* Search Recipe & Checkbox Row */}
-                    <div className="flex items-center justify-center gap-3 mb-3 text-xs text-stone-600 bg-stone-100/60 py-2 px-3 rounded-xl border border-stone-200/50">
-                      <label className="flex items-center gap-1.5 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={isAttachOn}
-                          onChange={() => toggleAttach(recipe.id)}
-                          className="rounded border-stone-300 text-amber-700 focus:ring-amber-500/50 w-3 h-3"
-                        />
-                        <span className="font-light text-[11px] text-stone-500">Attach Ingredients</span>
-                      </label>
-                      <a
-                        href={googleSearchUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="squishy-btn px-2.5 py-1 rounded-lg bg-white hover:bg-stone-50 text-stone-700 font-medium tracking-wide transition inline-flex items-center gap-1 border border-stone-300/60 text-[11px]"
-                      >
-                        🔎 Search Recipe
-                      </a>
-                    </div>
-                    
-                    <div className="text-xs text-stone-500 space-y-2.5 pt-1 w-full">
+                    <div className="text-xs text-stone-500 space-y-2.5 w-full">
                       
                       {/* Used Ingredients Accordion */}
                       <div className="w-full">
@@ -453,17 +428,38 @@ export default function Home() {
         
         {isFullMenuOpen && (
           <div className="mt-3 space-y-2">
-            {MENU_DATA.map((meal) => (
-              <div 
-                key={meal.id} 
-                className="bg-white/40 backdrop-blur-sm border border-stone-200/50 rounded-xl px-4 py-3 flex justify-between items-center text-xs shadow-sm"
-              >
-                <span className="font-medium text-stone-700">{meal.name}</span>
-                <span className="text-[10px] uppercase tracking-wider text-stone-500 font-medium bg-stone-200/50 px-2.5 py-1 rounded-lg">
-                  {meal.ingredients.length} items
-                </span>
-              </div>
-            ))}
+            {MENU_DATA.map((meal) => {
+              const isMenuOpen = openMenuKey[meal.id];
+              return (
+                <div 
+                  key={meal.id} 
+                  className="bg-white/40 backdrop-blur-sm border border-stone-200/50 rounded-xl flex flex-col text-xs shadow-sm overflow-hidden"
+                >
+                  <button 
+                    onClick={() => toggleMenuKey(meal.id)}
+                    className="w-full px-4 py-3 flex justify-between items-center hover:bg-white/60 transition text-left"
+                  >
+                    <span className="font-medium text-stone-700">{meal.id}. {meal.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] uppercase tracking-wider text-stone-500 font-medium bg-stone-200/50 px-2.5 py-1 rounded-lg">
+                        {meal.ingredients.length} items
+                      </span>
+                      <span className="text-stone-400">{isMenuOpen ? '▴' : '▾'}</span>
+                    </div>
+                  </button>
+                  
+                  {isMenuOpen && (
+                    <div className="px-4 pb-3 border-t border-stone-200/40 mt-1 pt-3">
+                      <ul className="space-y-1.5 text-stone-500 text-[11px] pl-2 border-l-2 border-stone-300/60">
+                        {meal.ingredients.map((ing, idx) => (
+                          <li key={idx} className="font-light">• {ing}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
