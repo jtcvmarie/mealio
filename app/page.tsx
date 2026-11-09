@@ -150,6 +150,122 @@ const MENU_DATA = [
   }
 ];
 
+// Hardcoded Grocery List Data
+const GROCERY_LIST = [
+  {
+    category: "Proteins",
+    items: [
+      { name: "Steak Tenderloin", meals: ["#1 - Heart & Seoul Steak Bowl", "#6 - Smokin' Steak Caesar Wrap", "#7 - Steak Fajita Wrap", "#10 - Cowboy Cookout Steak Salad", "#11 - Smokin' Steak Caesar Salad"] },
+      { name: "Roasted Southwest Chicken", meals: ["#3 - Elote Mac Bowl", "#4 - Southwest Bowl", "#8 - Southwest Wrap", "#9 - Spicy Street Corn Wrap", "#12 - Mangocado Salad"] },
+      { name: "Herb-Grilled Chicken", meals: ["#2 - MADiterranean Bowl", "#5 - Wild Harvest Bowl", "#13 - Orchard Salad"] },
+      { name: "House-Grilled Chicken", meals: ["#17 - Kids Awesome Box"] }
+    ]
+  },
+  {
+    category: "Greens & Vegetables",
+    items: [
+      { name: "Hand-Chopped Romaine", meals: ["#6 - Smokin' Steak Caesar Wrap", "#9 - Spicy Street Corn Wrap", "#10 - Cowboy Cookout Steak Salad", "#11 - Smokin' Steak Caesar Salad", "#13 - Orchard Salad"] },
+      { name: "Mixed Greens", meals: ["#10 - Cowboy Cookout Steak Salad", "#12 - Mangocado Salad"] },
+      { name: "Spinach", meals: ["#4 - Southwest Bowl", "#5 - Wild Harvest Bowl", "#8 - Southwest Wrap", "#13 - Orchard Salad"] },
+      { name: "Shredded Kale", meals: ["#5 - Wild Harvest Bowl", "#13 - Orchard Salad"] },
+      { name: "Rainbow Slaw", meals: ["#1 - Heart & Seoul Steak Bowl", "#2 - MADiterranean Bowl"] },
+      { name: "Shredded Red Cabbage", meals: ["#9 - Spicy Street Corn Wrap"] },
+      { name: "Fire-Roasted Corn / Roasted Corn", meals: ["#3 - Elote Mac Bowl", "#4 - Southwest Bowl", "#7 - Steak Fajita Wrap", "#8 - Southwest Wrap", "#9 - Spicy Street Corn Wrap", "#10 - Cowboy Cookout Steak Salad", "#12 - Mangocado Salad"] },
+      { name: "Grape Tomatoes", meals: ["#2 - MADiterranean Bowl", "#4 - Southwest Bowl", "#8 - Southwest Wrap"] },
+      { name: "Roasted / Fire-Roasted Red Peppers", meals: ["#7 - Steak Fajita Wrap", "#10 - Cowboy Cookout Steak Salad", "#16 - Green Goddess Pasta Salad"] },
+      { name: "Cucumbers", meals: ["#1 - Heart & Seoul Steak Bowl", "#2 - MADiterranean Bowl", "#16 - Green Goddess Pasta Salad"] },
+      { name: "Charred Red Onion", meals: ["#5 - Wild Harvest Bowl", "#7 - Steak Fajita Wrap"] },
+      { name: "Pickled Red Onion", meals: ["#2 - MADiterranean Bowl", "#9 - Spicy Street Corn Wrap"] },
+      { name: "Thinly Sliced Red Onions", meals: ["#16 - Green Goddess Pasta Salad"] },
+      { name: "Green Onion / Chopped Green Onion", meals: ["#1 - Heart & Seoul Steak Bowl", "#3 - Elote Mac Bowl"] },
+      { name: "Edamame / Shelled Edamame", meals: ["#1 - Heart & Seoul Steak Bowl", "#17 - Kids Awesome Box"] },
+      { name: "Carrot Sticks", meals: ["#14 - Creamy Whipped Feta Dip", "#15 - Loaded Mediterranean Hummus", "#17 - Kids Awesome Box"] },
+      { name: "Celery Sticks", meals: ["#14 - Creamy Whipped Feta Dip", "#15 - Loaded Mediterranean Hummus"] },
+      { name: "Roasted Sweet Potato", meals: ["#5 - Wild Harvest Bowl"] },
+      { name: "Charred Broccoli", meals: ["#1 - Heart & Seoul Steak Bowl"] },
+      { name: "Green Chiles", meals: ["#7 - Steak Fajita Wrap"] }
+    ]
+  },
+  {
+    category: "Fruits",
+    items: [
+      { name: "Fresh Avocado", meals: ["#4 - Southwest Bowl", "#8 - Southwest Wrap", "#9 - Spicy Street Corn Wrap", "#10 - Cowboy Cookout Steak Salad", "#12 - Mangocado Salad"] },
+      { name: "Fuji Apple", meals: ["#5 - Wild Harvest Bowl", "#13 - Orchard Salad"] },
+      { name: "Granny Smith Apples", meals: ["#17 - Kids Awesome Box"] },
+      { name: "Juicy Mango Chunks", meals: ["#12 - Mangocado Salad"] }
+    ]
+  },
+  {
+    category: "Dairy & Cheese",
+    items: [
+      { name: "Creamy Cotija Cheese", meals: ["#3 - Elote Mac Bowl", "#4 - Southwest Bowl", "#8 - Southwest Wrap", "#9 - Spicy Street Corn Wrap", "#10 - Cowboy Cookout Steak Salad"] },
+      { name: "Crumbled Feta Cheese", meals: ["#2 - MADiterranean Bowl", "#16 - Green Goddess Pasta Salad"] },
+      { name: "Creamy Whipped Feta", meals: ["#2 - MADiterranean Bowl", "#14 - Creamy Whipped Feta Dip"] },
+      { name: "Goat Cheese / Crumbled Goat Cheese", meals: ["#5 - Wild Harvest Bowl", "#13 - Orchard Salad"] },
+      { name: "Shaved Parmesan Cheese", meals: ["#6 - Smokin' Steak Caesar Wrap", "#11 - Smokin' Steak Caesar Salad"] },
+      { name: "Shredded White Cheddar / White Cheddar", meals: ["#7 - Steak Fajita Wrap", "#12 - Mangocado Salad"] },
+      { name: "Unsweetened Milk", meals: ["#17 - Kids Awesome Box"] }
+    ]
+  },
+  {
+    category: "Grains, Pastas & Wraps",
+    items: [
+      { name: "U.S.-Grown 5-Grain Wild Rice Blend", meals: ["#1 - Heart & Seoul Steak Bowl", "#2 - MADiterranean Bowl", "#4 - Southwest Bowl", "#5 - Wild Harvest Bowl", "#7 - Steak Fajita Wrap", "#8 - Southwest Wrap"] },
+      { name: "White Cheddar Cavatappi Mac", meals: ["#3 - Elote Mac Bowl"] },
+      { name: "Cavatappi Pasta", meals: ["#16 - Green Goddess Pasta Salad", "#17 - Kids Awesome Box"] },
+      { name: "Whole Wheat Tortilla", meals: ["#6 - Smokin' Steak Caesar Wrap", "#7 - Steak Fajita Wrap", "#9 - Spicy Street Corn Wrap"] },
+      { name: "Spinach Tortilla", meals: ["#8 - Southwest Wrap"] }
+    ]
+  },
+  {
+    category: "Dressings, Sauces & Oils",
+    items: [
+      { name: "Cilantro Chili Lime Dressing", meals: ["#3 - Elote Mac Bowl", "#4 - Southwest Bowl", "#7 - Steak Fajita Wrap", "#8 - Southwest Wrap", "#9 - Spicy Street Corn Wrap"] },
+      { name: "House-Made Green Goddess Dressing", meals: ["#2 - MADiterranean Bowl", "#16 - Green Goddess Pasta Salad"] },
+      { name: "House-Made Chipotle Caesar Dressing", meals: ["#6 - Smokin' Steak Caesar Wrap", "#11 - Smokin' Steak Caesar Salad"] },
+      { name: "House-Made Honey Balsamic Vinaigrette", meals: ["#5 - Wild Harvest Bowl", "#13 - Orchard Salad"] },
+      { name: "Sesame Ginger Dressing", meals: ["#1 - Heart & Seoul Steak Bowl"] },
+      { name: "House-Made Creamy Ginger Dressing", meals: ["#12 - Mangocado Salad"] },
+      { name: "House-Made Smoky Chipotle Ranch Dressing", meals: ["#10 - Cowboy Cookout Steak Salad"] },
+      { name: "Ranch Dressing", meals: ["#17 - Kids Awesome Box"] },
+      { name: "Hot Chili Aioli Drizzle", meals: ["#6 - Smokin' Steak Caesar Wrap", "#11 - Smokin' Steak Caesar Salad"] },
+      { name: "Gochujang Drizzle", meals: ["#1 - Heart & Seoul Steak Bowl"] },
+      { name: "Green Herb Drizzle", meals: ["#2 - MADiterranean Bowl"] },
+      { name: "BBQ Drizzle", meals: ["#10 - Cowboy Cookout Steak Salad"] },
+      { name: "Olive Oil", meals: ["#15 - Loaded Mediterranean Hummus"] },
+      { name: "Honey", meals: ["#14 - Creamy Whipped Feta Dip"] }
+    ]
+  },
+  {
+    category: "Pantry, Dry Goods & Toppings",
+    items: [
+      { name: "Black Beans", meals: ["#7 - Steak Fajita Wrap", "#10 - Cowboy Cookout Steak Salad"] },
+      { name: "Chickpeas", meals: ["#15 - Loaded Mediterranean Hummus"] },
+      { name: "Classic Roasted Garlic Hummus", meals: ["#15 - Loaded Mediterranean Hummus"] },
+      { name: "Focaccia Crouton Crumble / House-Made Focaccia Croutons", meals: ["#6 - Smokin' Steak Caesar Wrap", "#11 - Smokin' Steak Caesar Salad", "#13 - Orchard Salad"] },
+      { name: "Herb Focaccia Bread", meals: ["#14 - Creamy Whipped Feta Dip", "#15 - Loaded Mediterranean Hummus"] },
+      { name: "Parmesan Crisps", meals: ["#6 - Smokin' Steak Caesar Wrap", "#11 - Smokin' Steak Caesar Salad"] },
+      { name: "Stacy's Pita Chips", meals: ["#2 - MADiterranean Bowl"] },
+      { name: "Fritos", meals: ["#9 - Spicy Street Corn Wrap"] },
+      { name: "Wontons", meals: ["#1 - Heart & Seoul Steak Bowl"] },
+      { name: "Crispy Onions", meals: ["#10 - Cowboy Cookout Steak Salad"] },
+      { name: "Craisins / Dried Cranberries", meals: ["#5 - Wild Harvest Bowl", "#13 - Orchard Salad"] },
+      { name: "Candied Pecans", meals: ["#13 - Orchard Salad"] },
+      { name: "Tuxedo Sesame Seed Shake", meals: ["#1 - Heart & Seoul Steak Bowl"] },
+      { name: "MAD Spice", meals: ["#6 - Smokin' Steak Caesar Wrap", "#11 - Smokin' Steak Caesar Salad", "#14 - Creamy Whipped Feta Dip"] },
+      { name: "Juice", meals: ["#17 - Kids Awesome Box"] }
+    ]
+  },
+  {
+    category: "Fresh Herbs",
+    items: [
+      { name: "Fresh Chopped Cilantro", meals: ["#3 - Elote Mac Bowl", "#9 - Spicy Street Corn Wrap"] },
+      { name: "Chopped Mint", meals: ["#2 - MADiterranean Bowl"] },
+      { name: "Fresh Chopped Parsley", meals: ["#15 - Loaded Mediterranean Hummus"] }
+    ]
+  }
+];
+
 // Dynamically generate all unique ingredients for suggestions/autocomplete
 const ALL_INGREDIENTS = Array.from(new Set(MENU_DATA.flatMap(m => m.ingredients))).sort();
 
@@ -160,9 +276,13 @@ export default function Home() {
   const [openUsed, setOpenUsed] = useState<Record<number, boolean>>({});
   const [openMissed, setOpenMissed] = useState<Record<number, boolean>>({});
   
-  // State for the Full Menu accordions
+  // States for the Full Menu Key
   const [isFullMenuOpen, setIsFullMenuOpen] = useState<boolean>(false);
   const [openMenuKey, setOpenMenuKey] = useState<Record<number, boolean>>({});
+  
+  // States for the Grocery List
+  const [isGroceryListOpen, setIsGroceryListOpen] = useState<boolean>(false);
+  const [openGroceryCategory, setOpenGroceryCategory] = useState<Record<string, boolean>>({});
 
   const toggleIngredient = (ing: string) => {
     const item = ing.toLowerCase().trim();
@@ -249,6 +369,10 @@ export default function Home() {
 
   const toggleMenuKey = (id: number) => {
     setOpenMenuKey(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleGroceryCategory = (cat: string) => {
+    setOpenGroceryCategory(prev => ({ ...prev, [cat]: !prev[cat] }));
   };
 
   return (
@@ -366,7 +490,6 @@ export default function Home() {
 
                 <div className="p-4 flex flex-col justify-between flex-1 items-center">
                   <div className="w-full">
-                    
                     <div className="text-xs text-stone-500 space-y-2.5 w-full">
                       
                       {/* Used Ingredients Accordion */}
@@ -417,7 +540,7 @@ export default function Home() {
       </section>
 
       {/* Full Menu Reference Section */}
-      <section className="w-full mt-10 mb-4 max-w-xl mx-auto">
+      <section className="w-full mt-10 max-w-xl mx-auto">
         <button
           onClick={() => setIsFullMenuOpen(!isFullMenuOpen)}
           className="w-full py-3 px-4 bg-white/50 backdrop-blur-sm border border-stone-200/70 rounded-2xl text-stone-600 font-medium text-xs flex justify-between items-center hover:bg-white/80 transition shadow-sm"
@@ -455,6 +578,65 @@ export default function Home() {
                           <li key={idx} className="font-light">• {ing}</li>
                         ))}
                       </ul>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Grocery List Section */}
+      <section className="w-full mt-4 mb-10 max-w-xl mx-auto">
+        <button
+          onClick={() => setIsGroceryListOpen(!isGroceryListOpen)}
+          className="w-full py-3 px-4 bg-white/50 backdrop-blur-sm border border-stone-200/70 rounded-2xl text-stone-600 font-medium text-xs flex justify-between items-center hover:bg-white/80 transition shadow-sm"
+        >
+          <span className="tracking-wide uppercase text-[10px]">🛒 View Grocery List</span>
+          <span className="text-stone-400">{isGroceryListOpen ? '▴' : '▾'}</span>
+        </button>
+
+        {isGroceryListOpen && (
+          <div className="mt-3 space-y-2">
+            {GROCERY_LIST.map((category, catIdx) => {
+              const isCatOpen = openGroceryCategory[category.category];
+              return (
+                <div 
+                  key={catIdx} 
+                  className="bg-white/40 backdrop-blur-sm border border-stone-200/50 rounded-xl flex flex-col text-xs shadow-sm overflow-hidden"
+                >
+                  <button 
+                    onClick={() => toggleGroceryCategory(category.category)}
+                    className="w-full px-4 py-3 flex justify-between items-center hover:bg-white/60 transition text-left"
+                  >
+                    <span className="font-medium text-stone-700">{category.category}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] uppercase tracking-wider text-stone-500 font-medium bg-stone-200/50 px-2.5 py-1 rounded-lg">
+                        {category.items.length} items
+                      </span>
+                      <span className="text-stone-400">{isCatOpen ? '▴' : '▾'}</span>
+                    </div>
+                  </button>
+                  
+                  {isCatOpen && (
+                    <div className="px-4 pb-4 border-t border-stone-200/40 mt-1 pt-4 space-y-5">
+                      {category.items.map((item, itemIdx) => (
+                        <div key={itemIdx} className="space-y-1.5">
+                          <label className="flex items-start gap-2.5 text-stone-700 font-medium select-none cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              className="mt-0.5 rounded border-stone-300 text-[#81b29a] focus:ring-[#81b29a]/50 w-3.5 h-3.5"
+                            />
+                            <span>{item.name}</span>
+                          </label>
+                          <ul className="space-y-1 text-stone-500 text-[10px] pl-6 border-l-2 border-stone-300/40 ml-1.5">
+                            {item.meals.map((meal, mealIdx) => (
+                              <li key={mealIdx} className="font-light italic">{meal}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
